@@ -1,4 +1,5 @@
-﻿using KW1C.WebScraping.Models;
+﻿using System.Text.RegularExpressions;
+using KW1C.WebScraping.Models;
 using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -30,10 +31,17 @@ var reviews = new List<Review>();
 
 foreach (var reviewElement in driver.FindElements(By.CssSelector(".gws-localreviews__google-review")).ToArray())
 {
+    var stars = reviewElement.FindElement(By.ClassName("z3HNkc"));
+    var starsText = stars.GetAttribute("aria-label");
+
+    var regexResult = Regex.Match(starsText, @"Rated (\d),0 out of 5").Groups[1];
+    var floatStars = float.Parse(regexResult.Value);
+    
     reviews.Add(new Review()
     {
         Name = reviewElement.FindElement(By.ClassName("TSUbDb")).Text,
-        Text = reviewElement.FindElement(By.ClassName("Jtu6Td")).Text
+        Text = reviewElement.FindElement(By.ClassName("Jtu6Td")).Text,
+        Stars = floatStars
     });
 }
 

@@ -14,4 +14,6 @@ public class Review
     public string Name { get; set; }
     
     public string Text { get; set; }
+    
+    public float Stars { get; set; }
 }
